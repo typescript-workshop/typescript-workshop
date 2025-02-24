@@ -19,3 +19,9 @@ Votre ordinateur 💻
 
 TypeScript doc : https://www.typescriptlang.org/docs/
 Js doc : https://jsdoc.app/
+
+## Point clés à aborder
+
+- Pouvoir typer pour avoir de l'auto-complétion
+- Filtrer un object avec une intersection de types F & string
+- Where => Autocompletion
