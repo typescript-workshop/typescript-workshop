@@ -24,4 +24,5 @@ Js doc : https://jsdoc.app/
 
 - Pouvoir typer pour avoir de l'auto-complétion
 - Filtrer un object avec une intersection de types F & string
-- Where => Autocompletion
+- Where => Autocompletion Mapped types https://www.typescriptlang.org/docs/handbook/2/mapped-types.html
+- Test de types : https://vitest.dev/guide/testing-types

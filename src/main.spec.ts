@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { buildDb, toSql } from "./main";
+import { describe, it, expect, expectTypeOf } from "vitest";
+import { buildDb, toSql, type WhereClause, type WhereClauses } from "./main";
 
 describe("buildDb", () => {
   it("should work", () => {
@@ -54,9 +54,26 @@ describe("buildDb", () => {
     const query = db
       .selectFrom("users")
       .selectFields(["id"])
-      .where("birthDate", "=", date);
+      .where("lastName", "=", date);
+
     expect(toSql(query)).toEqual(
       "SELECT id FROM users WHERE birthDate = 1990-01-01"
     );
+  });
+
+  it("should add where clause", () => {
+    //given
+    type UserTable = {
+      lastName: string;
+      birthDate: Date;
+    };
+    type Database = {
+      users: UserTable;
+    };
+    type Result = WhereClauses<Database, "users">;
+
+    expectTypeOf<Result>().toEqualTypeOf<
+      WhereClause<"lastName", string> | WhereClause<"birthDate", Date>
+    >();
   });
 });

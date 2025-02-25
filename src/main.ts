@@ -1,15 +1,20 @@
 import { match } from "ts-pattern";
 
-type WhereClause = {
-  field: "birthDate";
+export type WhereClause<F, V> = {
+  field: F;
   operator: "=";
-  value: Date;
+  value: V;
 };
+
+export type WhereClauses<DB, TB extends keyof DB> = {
+  [Field in keyof DB[TB]]: WhereClause<Field, DB[TB][Field]>;
+}[keyof DB[TB]];
+
 type SelectQueryData<DB, TB extends keyof DB> = {
   _operation: "select";
   _table: TB;
   _fields: string[] | "ALL";
-  _where: WhereClause[];
+  _where: WhereClauses<DB, TB>;
 };
 type AnyDB = Record<string, any>;
 type SelectQuery<DB extends AnyDB, TB extends keyof DB> = SelectQueryData<
@@ -18,6 +23,11 @@ type SelectQuery<DB extends AnyDB, TB extends keyof DB> = SelectQueryData<
 > & {
   selectFields: (fieldNames: (keyof DB[TB] & string)[]) => SelectQuery<DB, TB>;
   selectAll: () => SelectQuery<DB, TB>;
+  where: (
+    field: WhereClause["field"],
+    operator: WhereClause["operator"],
+    value: WhereClause["value"]
+  ) => SelectQuery<DB, TB>;
 };
 
 export const buildDb = <T extends Record<string, any>>() => ({
@@ -54,6 +64,7 @@ const withSelectMethods = <DB extends AnyDB, TB extends keyof DB>(
     selectFields: <F extends keyof DB[TB]>(fieldNames: (F & string)[]) =>
       updateSelectQuery(baseData, fieldNames),
     selectAll: () => updateSelectQuery(baseData, "ALL"),
+    where: () => updateSelectQuery(baseData, "ALL"),
   };
 };
 
