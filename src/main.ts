@@ -14,19 +14,21 @@ type SelectQueryData<DB, TB extends keyof DB> = {
   _operation: "select";
   _table: TB;
   _fields: string[] | "ALL";
-  _where: WhereClauses<DB, TB>;
+  _where?: WhereClauses<DB, TB>;
 };
+
 type AnyDB = Record<string, any>;
+
 type SelectQuery<DB extends AnyDB, TB extends keyof DB> = SelectQueryData<
   DB,
   TB
 > & {
   selectFields: (fieldNames: (keyof DB[TB] & string)[]) => SelectQuery<DB, TB>;
   selectAll: () => SelectQuery<DB, TB>;
-  where: (
-    field: WhereClause["field"],
-    operator: WhereClause["operator"],
-    value: WhereClause["value"]
+  where: <F extends keyof DB[TB]>(
+    field: F,
+    operator: "=",
+    value: DB[TB][F]
   ) => SelectQuery<DB, TB>;
 };
 
@@ -38,22 +40,19 @@ export const buildDb = <T extends Record<string, any>>() => ({
 const initSelectQuery = <DB extends AnyDB, TB extends keyof DB>(
   tableName: TB
 ): SelectQuery<DB, TB> => {
-  return withSelectMethods({
+  const query: SelectQueryData<DB, TB> = {
     _operation: "select",
     _table: tableName,
     _fields: [],
-    _where: [],
-  });
+  };
+  return withSelectMethods(query);
 };
 
 const updateSelectQuery = <DB extends AnyDB, TB extends keyof DB>(
   baseData: SelectQueryData<DB, TB>,
-  fields: (keyof DB[TB] & string)[] | "ALL"
+  update: Partial<SelectQueryData<DB, TB>>
 ): SelectQuery<DB, TB> => {
-  return withSelectMethods({
-    ...baseData,
-    _fields: fields,
-  });
+  return withSelectMethods({ ...baseData, ...update });
 };
 
 const withSelectMethods = <DB extends AnyDB, TB extends keyof DB>(
@@ -61,10 +60,13 @@ const withSelectMethods = <DB extends AnyDB, TB extends keyof DB>(
 ): SelectQuery<DB, TB> => {
   return {
     ...baseData,
-    selectFields: <F extends keyof DB[TB]>(fieldNames: (F & string)[]) =>
-      updateSelectQuery(baseData, fieldNames),
-    selectAll: () => updateSelectQuery(baseData, "ALL"),
-    where: () => updateSelectQuery(baseData, "ALL"),
+    selectFields: (fieldNames) =>
+      updateSelectQuery(baseData, { _fields: fieldNames }),
+    selectAll: () => updateSelectQuery(baseData, { _fields: "ALL" }),
+    where: (field, operator, value) =>
+      updateSelectQuery(baseData, {
+        _where: { field, operator, value } as WhereClauses<DB, TB>,
+      }),
   };
 };
 
@@ -72,20 +74,14 @@ export const toSql = <DB extends AnyDB, TB extends keyof DB>(
   query: SelectQuery<DB, TB>
 ) =>
   match(query)
-    .with(
-      { _operation: "select" },
-      (selectQuery) =>
-        `SELECT ${
-          selectQuery._fields === "ALL" ? "*" : selectQuery._fields.join(", ")
-        } FROM ${String(selectQuery._table)}${
-          selectQuery._where.length > 0
-            ? `WHERE ${selectQuery._where
-                .map(
-                  ({ field, operator, value }) =>
-                    `${field} ${operator} ${value}`
-                )
-                .join(" AND ")}`
-            : ""
-        }`
-    )
+    .with({ _operation: "select" }, (selectQuery) => {
+      const whereClause = selectQuery._where
+        ? ` WHERE ${String(selectQuery._where.field)} ${
+            selectQuery._where.operator
+          } '${selectQuery._where.value}'`
+        : "";
+      return `SELECT ${
+        selectQuery._fields === "ALL" ? "*" : selectQuery._fields.join(", ")
+      } FROM ${String(selectQuery._table)}${whereClause}`;
+    })
     .exhaustive();
