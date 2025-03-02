@@ -1,5 +1,6 @@
 import { match } from "ts-pattern";
 
+export type AnyDB = Record<string, any>;
 export type WhereClause<F, V> = {
   field: F;
   operator: "=";
@@ -16,8 +17,6 @@ type SelectQueryData<DB, TB extends keyof DB> = {
   _fields: string[] | "ALL";
   _where?: WhereClauses<DB, TB>;
 };
-
-type AnyDB = Record<string, any>;
 
 type SelectQuery<DB extends AnyDB, TB extends keyof DB> = SelectQueryData<
   DB,
