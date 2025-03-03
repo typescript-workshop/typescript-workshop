@@ -7,11 +7,6 @@ export class SelectQuery<DB extends AnyDB, TB extends keyof DB> {
   private _fields: string[] | "ALL" = [];
   private _where?: WhereClauses<DB, TB>;
 
-  //Pour récuperer les valeurs courantes on peut construire un getter...
-  get operation(): string {
-    return this._operation;
-  }
-
   constructor(table: TB) {
     this._table = table;
   }
@@ -41,7 +36,7 @@ export class SelectQuery<DB extends AnyDB, TB extends keyof DB> {
           this._where.value
         }'`
       : "";
-    return `SELECT ${
+    return `${this._operation.toUpperCase()} ${
       this._fields === "ALL" ? "*" : this._fields.join(", ")
     } FROM ${String(this._table)}${whereClause}`;
   }
@@ -52,3 +47,9 @@ export class Database<DB extends AnyDB> {
     return new SelectQuery<DB, TB>(tableName);
   }
 }
+
+export const uniqueProperty = Symbol();
+
+// export class Opaque<A, B extends string> {
+//   static readonly opaque = A & { [uniqueProperty]: B };
+// }

@@ -26,3 +26,12 @@ Js doc : https://jsdoc.app/
 - Filtrer un object avec une intersection de types F & string
 - Where => Autocompletion Mapped types https://www.typescriptlang.org/docs/handbook/2/mapped-types.html
 - Test de types : https://vitest.dev/guide/testing-types
+- Types opaques et introduction au type générique
+- Templates litterals types -> `${B}_uuid`
+-
+
+## Usecases mis de côté pour le moment
+
+- typeof
+- ReturnType<typeof>
+- never

@@ -18,6 +18,16 @@ type SelectQueryData<DB, TB extends keyof DB> = {
   _where?: WhereClauses<DB, TB>;
 };
 
+export type DeleteQueryData<DB, TB extends keyof DB> = {
+  _operation: "delete";
+  _table: TB;
+  _where?: WhereClauses<DB, TB>;
+};
+
+type QueryData<DB, TB extends keyof DB> =
+  | SelectQueryData<DB, TB>
+  | DeleteQueryData<DB, TB>;
+
 type SelectQuery<DB extends AnyDB, TB extends keyof DB> = SelectQueryData<
   DB,
   TB
@@ -70,17 +80,37 @@ const withSelectMethods = <DB extends AnyDB, TB extends keyof DB>(
 };
 
 export const toSql = <DB extends AnyDB, TB extends keyof DB>(
-  query: SelectQuery<DB, TB>
+  query: QueryData<DB, TB>
 ) =>
   match(query)
     .with({ _operation: "select" }, (selectQuery) => {
-      const whereClause = selectQuery._where
-        ? ` WHERE ${String(selectQuery._where.field)} ${
-            selectQuery._where.operator
-          } '${selectQuery._where.value}'`
-        : "";
+      const whereClause = toWhereSql(selectQuery._where);
       return `SELECT ${
         selectQuery._fields === "ALL" ? "*" : selectQuery._fields.join(", ")
       } FROM ${String(selectQuery._table)}${whereClause}`;
     })
+    .with({ _operation: "delete" }, (deleteQuery) => {
+      const whereClause = toWhereSql(deleteQuery._where);
+      return `DELETE FROM ${String(deleteQuery._table)}${whereClause}`;
+    })
     .exhaustive();
+
+const toWhereSql = <F, V>(whereClause: WhereClause<F, V> | undefined) =>
+  whereClause
+    ? ` WHERE ${String(whereClause.field)} ${whereClause.operator} '${
+        isDate(whereClause.value)
+          ? whereClause.value.toISOString().split("T")[0]
+          : whereClause.value
+      }'`
+    : "";
+
+const isDate = (value: unknown): value is Date => {
+  return value instanceof Date;
+};
+
+const uniqueOpaqueProperty = Symbol();
+export type Opaque<A, B extends string> = A & {
+  [uniqueOpaqueProperty]: B;
+};
+
+export type UUID<B extends string> = Opaque<string, `${B}_uuid`>;
