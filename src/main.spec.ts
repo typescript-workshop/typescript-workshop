@@ -56,6 +56,78 @@ describe("buildDb", () => {
     expect(toSql(query)).toEqual("SELECT id, name FROM companies");
   });
 
+  it("should allow field alias", () => {
+    //given
+    type UserTable = {
+      id: string;
+      firstName: string;
+      lastName: string;
+      birthDate: Date;
+    };
+    type CompanyTable = {
+      id: string;
+      name: string;
+    };
+    type Database = {
+      users: UserTable;
+      companies: CompanyTable;
+    };
+    const db = buildDb<Database>();
+    const query = db
+      .selectFrom("companies")
+      .selectFields(["name as companyName"]);
+    expect(toSql(query)).toEqual("SELECT name as companyName FROM companies");
+  });
+
+  it("should allow table alias", () => {
+    //given
+    type UserTable = {
+      id: string;
+      firstName: string;
+      lastName: string;
+      birthDate: Date;
+    };
+    type CompanyTable = {
+      id: string;
+      name: string;
+    };
+    type Database = {
+      users: UserTable;
+      companies: CompanyTable;
+    };
+    const db = buildDb<Database>();
+    const query = db
+      .selectFrom("companies c")
+      .selectFields(["c.name as contact_name"]);
+    expect(toSql(query)).toEqual(
+      "SELECT c.name as contact_name FROM companies c"
+    );
+  });
+  it("should allow explicit table in field name", () => {
+    //given
+    type UserTable = {
+      id: string;
+      firstName: string;
+      lastName: string;
+      birthDate: Date;
+    };
+    type CompanyTable = {
+      id: string;
+      name: string;
+    };
+    type Database = {
+      users: UserTable;
+      companies: CompanyTable;
+    };
+    const db = buildDb<Database>();
+    const query = db
+      .selectFrom("companies")
+      .selectFields(["companies.name as contact_name"]);
+    expect(toSql(query)).toEqual(
+      "SELECT companies.name as contact_name FROM companies"
+    );
+  });
+
   it("should select all fields", () => {
     //given
     type UserTable = {

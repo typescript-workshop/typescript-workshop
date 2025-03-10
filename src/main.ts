@@ -11,7 +11,7 @@ export type WhereClauses<DB, TB extends keyof DB> = {
   [Field in keyof DB[TB]]: WhereClause<Field, DB[TB][Field]>;
 }[keyof DB[TB]];
 
-type SelectQueryData<DB, TB extends keyof DB> = {
+type SelectQueryData<DB extends AnyDB, TB extends TableOrAlias<DB>> = {
   _operation: "select";
   _table: TB;
   _fields: string[] | "ALL";
@@ -24,15 +24,30 @@ export type DeleteQueryData<DB, TB extends keyof DB> = {
   _where?: WhereClauses<DB, TB>;
 };
 
-type QueryData<DB, TB extends keyof DB> =
+type QueryData<DB extends AnyDB, TB extends keyof DB> =
   | SelectQueryData<DB, TB>
   | DeleteQueryData<DB, TB>;
+
+type ExplicitableField<
+  DB extends AnyDB,
+  TB extends TableOrAlias<DB>
+> = TB extends `${infer Table} ${infer TableAlias}`
+  ? `${TableAlias}.${keyof DB[Table] & string}`
+  : `${TB & string}.${keyof DB[TB] & string}` | (keyof DB[TB] & string);
+
+type AliasableField<DB extends AnyDB, TB extends TableOrAlias<DB>> =
+  | ExplicitableField<DB, TB>
+  | `${ExplicitableField<DB, TB>} as ${string}`;
+
+type TableOrAlias<DB extends AnyDB> =
+  | keyof DB
+  | `${keyof DB & string} ${string}`;
 
 type SelectQuery<DB extends AnyDB, TB extends keyof DB> = SelectQueryData<
   DB,
   TB
 > & {
-  selectFields: (fieldNames: (keyof DB[TB] & string)[]) => SelectQuery<DB, TB>;
+  selectFields: (fieldNames: AliasableField<DB, TB>[]) => SelectQuery<DB, TB>;
   selectAll: () => SelectQuery<DB, TB>;
   where: <F extends keyof DB[TB]>(
     field: F,
@@ -41,8 +56,8 @@ type SelectQuery<DB extends AnyDB, TB extends keyof DB> = SelectQueryData<
   ) => SelectQuery<DB, TB>;
 };
 
-export const buildDb = <T extends Record<string, any>>() => ({
-  selectFrom: <U extends keyof T>(tableName: U & string) =>
+export const buildDb = <T extends AnyDB>() => ({
+  selectFrom: <U extends TableOrAlias<T>>(tableName: U & string) =>
     initSelectQuery<T, U>(tableName),
 });
 
