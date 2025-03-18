@@ -203,3 +203,109 @@ describe("buildDb", () => {
     );
   });
 });
+
+describe("Initialisation de votre database", () => {
+  it("UserTable doit avoir les bonnes propriétés", () => {
+    expectTypeOf<UserTable>().toMatchTypeOf<{
+      id: string;
+      firstName: string;
+      lastName: string;
+      birthDate: Date;
+    }>();
+  });
+
+  it("Database doit contenir une table 'users'", () => {
+    expectTypeOf<Database>().toHaveProperty("users");
+  });
+
+  type UserTable = {
+    id: string;
+    firstName: string;
+    lastName: string;
+    birthDate: Date;
+  };
+  type CompanyTable = {
+    id: string;
+    name: string;
+  };
+  type Database = {
+    users: UserTable;
+    companies: CompanyTable;
+  };
+  const selectFrom = <DB>(_table: keyof DB) => {
+    return {
+      _operation: "select",
+      _table,
+      _fields: [],
+    };
+  };
+  type SelectableQuery<DB, T extends keyof DB> = {
+    _operation: "select";
+    _table: T;
+    _fields: [];
+  };
+  type AnySelectableQuery = SelectableQuery<any, any>;
+  const selectAll = <Ctx extends AnySelectableQuery>(_ctx: Ctx) => {
+    return {
+      ..._ctx,
+      _fields: "ALL",
+    };
+  };
+
+  it("On peut séléctionner une table de notre DB", () => {
+    const result = selectFrom<Database>("users");
+
+    expectTypeOf<Parameters<typeof selectFrom<Database>>[0]>().toEqualTypeOf<
+      "users" | "companies"
+    >();
+    expect(result).toEqual({
+      _operation: "select",
+      _table: "users",
+      _fields: [],
+    });
+  });
+
+  it("On peut séléctionner tous les champs d'une table", () => {
+    type Context = SelectableQuery<Database, "users">;
+    const ctx: Context = {
+      _operation: "select",
+      _table: "users",
+      _fields: [],
+    };
+    const result = selectAll(ctx);
+
+    expectTypeOf<Parameters<typeof selectAll<Context>>[0]>().toEqualTypeOf<{
+      _operation: "select";
+      _table: "users";
+      _fields: [];
+    }>();
+
+    expect(result).toEqual({
+      _operation: "select",
+      _table: "users",
+      _fields: "ALL",
+    });
+  });
+
+  it.skip("On peut selectionner des filtres", () => {
+    type Context = SelectableQuery<Database, "users">;
+    const ctx: Context = {
+      _operation: "select",
+      _table: "users",
+      _fields: [],
+    };
+    //const result = where("firstName", "=", "Johnny")(ctx);
+
+    expectTypeOf<Parameters<typeof selectAll<Context>>[0]>().toEqualTypeOf<{
+      _operation: "select";
+      _table: "users";
+      _fields: [];
+    }>();
+    const result = ctx;
+    expect(result).toEqual({
+      _operation: "select",
+      _table: "users",
+      _fields: "ALL",
+    });
+  });
+});
