@@ -8,6 +8,7 @@ import {
   type WhereClause,
   type WhereClauses,
 } from "./main";
+import { Database } from "./main-class-version";
 
 describe("buildDb", () => {
   it("should add uuid util", () => {
@@ -239,10 +240,27 @@ describe("Initialisation de votre database", () => {
       _fields: [],
     };
   };
-  type SelectableQuery<DB, T extends keyof DB> = {
+  type SelectableQuery<DB, TB extends keyof DB> = {
+    _db: DB;
     _operation: "select";
-    _table: T;
+    _table: TB;
     _fields: [];
+  };
+
+  type WhereClause<F, V> = {
+    field: F;
+    operator: "=";
+    value: V;
+  };
+  type WhereClauses<DB, TB extends keyof DB> = {
+    [Field in keyof DB[TB]]: WhereClause<Field, DB[TB][Field]>;
+  }[keyof DB[TB]];
+  type SelectableFilteredQuery<DB, TB extends keyof DB> = {
+    _db: DB;
+    _operation: "select";
+    _table: TB;
+    _fields: [];
+    _where: WhereClauses<DB, TB>;
   };
   type AnySelectableQuery = SelectableQuery<any, any>;
   const selectAll = <Ctx extends AnySelectableQuery>(_ctx: Ctx) => {
@@ -251,8 +269,35 @@ describe("Initialisation de votre database", () => {
       _fields: "ALL",
     };
   };
+  type Table<Ctx extends AnySelectableQuery> = Ctx["_db"][Ctx["_table"]];
+  type Field<
+    Ctx extends AnySelectableQuery,
+    F extends AnyFieldName<Ctx>
+  > = Table<Ctx>[F];
+  type AnyFieldName<Ctx extends AnySelectableQuery> = keyof Table<Ctx>;
+  type AllFieldNames<Ctx extends AnySelectableQuery> = AnyFieldName<Ctx>[];
+  const selectFields = <Ctx extends AnySelectableQuery>(
+    _fields: AllFieldNames<Ctx>,
+    _ctx: Ctx
+  ) => {
+    return {
+      ..._ctx,
+      _fields,
+    };
+  };
+  const where = <Ctx extends AnySelectableQuery, F extends AnyFieldName<Ctx>>(
+    field: F,
+    operator: "=",
+    value: Field<Ctx, F>,
+    _ctx: Ctx
+  ) => {
+    return {
+      ..._ctx,
+      _where: { field, operator, value },
+    };
+  };
 
-  it("On peut séléctionner une table de notre DB", () => {
+  it("On peut séléctionner depuis une table de notre DB", () => {
     const result = selectFrom<Database>("users");
 
     expectTypeOf<Parameters<typeof selectFrom<Database>>[0]>().toEqualTypeOf<
@@ -268,13 +313,14 @@ describe("Initialisation de votre database", () => {
   it("On peut séléctionner tous les champs d'une table", () => {
     type Context = SelectableQuery<Database, "users">;
     const ctx: Context = {
+      _db: undefined as any as Database,
       _operation: "select",
       _table: "users",
       _fields: [],
     };
     const result = selectAll(ctx);
 
-    expectTypeOf<Parameters<typeof selectAll<Context>>[0]>().toEqualTypeOf<{
+    expectTypeOf<Parameters<typeof selectAll<Context>>[0]>().toMatchTypeOf<{
       _operation: "select";
       _table: "users";
       _fields: [];
@@ -286,22 +332,48 @@ describe("Initialisation de votre database", () => {
       _fields: "ALL",
     });
   });
-
-  it.skip("On peut selectionner des filtres", () => {
+  it("On peut sélectionner parmi tous les champs d'une table", () => {
     type Context = SelectableQuery<Database, "users">;
     const ctx: Context = {
+      _db: undefined as any as Database,
       _operation: "select",
       _table: "users",
       _fields: [],
     };
-    //const result = where("firstName", "=", "Johnny")(ctx);
+    const result = selectFields(["firstName", "lastName"], ctx);
 
-    expectTypeOf<Parameters<typeof selectAll<Context>>[0]>().toEqualTypeOf<{
+    expectTypeOf<Parameters<typeof selectFields<Context>>[1]>().toMatchTypeOf<{
+      _operation: "select";
+      _table: "users";
+      _fields: AllFieldNames<Context>;
+    }>();
+
+    expectTypeOf<Parameters<typeof selectFields<Context>>[0]>().toEqualTypeOf<
+      ("id" | "firstName" | "lastName" | "birthDate")[]
+    >();
+
+    expect(result).toEqual({
+      _operation: "select",
+      _table: "users",
+      _fields: ["firstName", "lastName"],
+    });
+  });
+
+  it.skip("On peut sélectionner des filtres", () => {
+    type Context = SelectableQuery<Database, "users">;
+    const ctx: Context = {
+      _db: undefined as any as Database,
+      _operation: "select",
+      _table: "users",
+      _fields: [],
+    };
+    const result = where("firstName", "=", "Johnny", ctx);
+
+    expectTypeOf<Parameters<typeof selectAll<Context>>[0]>().toMatchTypeOf<{
       _operation: "select";
       _table: "users";
       _fields: [];
     }>();
-    const result = ctx;
     expect(result).toEqual({
       _operation: "select",
       _table: "users",
