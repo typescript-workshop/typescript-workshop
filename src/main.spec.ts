@@ -8,7 +8,6 @@ import {
   type WhereClause,
   type WhereClauses,
 } from "./main";
-import { Database } from "./main-class-version";
 
 describe("buildDb", () => {
   it("should add uuid util", () => {
@@ -297,7 +296,7 @@ describe("Initialisation de votre database", () => {
     };
   };
 
-  it("On peut séléctionner depuis une table de notre DB", () => {
+  it("On peut sélectionner depuis une table de notre DB", () => {
     const result = selectFrom<Database>("users");
 
     expectTypeOf<Parameters<typeof selectFrom<Database>>[0]>().toEqualTypeOf<
@@ -310,7 +309,7 @@ describe("Initialisation de votre database", () => {
     });
   });
 
-  it("On peut séléctionner tous les champs d'une table", () => {
+  it("On peut sélectionner tous les champs d'une table", () => {
     type Context = SelectableQuery<Database, "users">;
     const ctx: Context = {
       _db: undefined as any as Database,
@@ -359,7 +358,7 @@ describe("Initialisation de votre database", () => {
     });
   });
 
-  it.skip("On peut sélectionner des filtres", () => {
+  it("On peut sélectionner des filtres", () => {
     type Context = SelectableQuery<Database, "users">;
     const ctx: Context = {
       _db: undefined as any as Database,
@@ -377,7 +376,8 @@ describe("Initialisation de votre database", () => {
     expect(result).toEqual({
       _operation: "select",
       _table: "users",
-      _fields: "ALL",
+      _fields: [],
+      _where: { field: "firstName", operator: "=", value: "Johnny" },
     });
   });
 });
