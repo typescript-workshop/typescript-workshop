@@ -288,7 +288,7 @@ describe("Initialisation de votre database", () => {
   const selectAll = <Ctx extends AnySelectableQuery>(_ctx: Ctx) => {
     return {
       ..._ctx,
-      _fields: "ALL",
+      _fields: "ALL" as const,
     };
   };
   const selectFields = <Ctx extends AnySelectableQuery>(
@@ -316,52 +316,108 @@ describe("Initialisation de votre database", () => {
   };
 
   it("On peut sélectionner depuis une table de notre DB", () => {
-    type Context = InitContext<Database>;
+    type Context = {
+      _db: Database;
+    };
 
-    expectTypeOf<Parameters<typeof selectFrom<Context>>[0]>().toEqualTypeOf<
-      "users" | "companies"
-    >();
+    expectTypeOf(selectFrom<Context>)
+      .parameter(0)
+      .toEqualTypeOf<"users" | "companies">();
   });
 
   it("On peut sélectionner tous les champs d'une table", () => {
-    type Context = SelectableQuery<Database, "users">;
+    type Context = {
+      _db: Database;
+      _operation: "select";
+      _table: "users";
+    };
 
     expectTypeOf(selectAll<Context>)
       .parameter(0)
       .toEqualTypeOf<Context>();
+
+    expectTypeOf(selectAll<Context>).returns.toEqualTypeOf<
+      Context & { _fields: "ALL" }
+    >();
   });
 
   it("On peut sélectionner parmi tous les champs d'une table", () => {
-    type Context = SelectableQuery<Database, "users">;
-
-    expectTypeOf<Parameters<typeof selectFields<Context>>[0]>().toEqualTypeOf<
-      ("id" | "firstName" | "lastName" | "birthDate")[]
-    >();
-
-    expectTypeOf<{
+    type UserContext = {
       _db: Database;
       _operation: "select";
       _table: "users";
-    }>().toMatchTypeOf<Parameters<typeof selectFields<Context>>[1]>();
+    };
+    type CompanyContext = {
+      _db: Database;
+      _operation: "select";
+      _table: "companies";
+    };
+
+    expectTypeOf(selectFields<UserContext>)
+      .parameter(0)
+      .toEqualTypeOf<("id" | "firstName" | "lastName" | "birthDate")[]>();
+    expectTypeOf(selectFields<CompanyContext>)
+      .parameter(0)
+      .toEqualTypeOf<("id" | "name")[]>();
+
+    expectTypeOf(selectFields<UserContext>)
+      .parameter(1)
+      .toEqualTypeOf<UserContext>();
+
+    expectTypeOf(selectFields<UserContext>).returns.toEqualTypeOf<
+      UserContext & {
+        _fields: ("id" | "firstName" | "lastName" | "birthDate")[];
+      }
+    >();
+    expectTypeOf(selectFields<CompanyContext>).returns.toEqualTypeOf<
+      CompanyContext & {
+        _fields: ("id" | "name")[];
+      }
+    >();
   });
 
   it("On peut sélectionner des filtres", () => {
-    type Context = SelectableQueryWithFields<Database, "users">;
+    type Context = {
+      _db: Database;
+      _operation: "select";
+      _table: "users";
+      _fields: "ALL";
+    };
 
-    type WhereFirstNameParameters = Parameters<
-      typeof where<Context, "firstName">
-    >;
-    expectTypeOf<"firstName">().toEqualTypeOf<WhereFirstNameParameters[0]>();
-    expectTypeOf<"=">().toEqualTypeOf<WhereFirstNameParameters[1]>();
-    expectTypeOf<string>().toEqualTypeOf<WhereFirstNameParameters[2]>();
+    expectTypeOf(where<Context, "firstName">)
+      .parameter(0)
+      .toEqualTypeOf<"firstName">();
+    expectTypeOf(where<Context, "firstName">)
+      .parameter(1)
+      .toEqualTypeOf<"=">();
+    expectTypeOf(where<Context, "firstName">)
+      .parameter(2)
+      .toEqualTypeOf<string>();
 
-    type WhereBirthDateParameters = Parameters<
-      typeof where<Context, "birthDate">
-    >;
-    expectTypeOf<"birthDate">().toEqualTypeOf<WhereBirthDateParameters[0]>();
-    expectTypeOf<"=">().toEqualTypeOf<WhereBirthDateParameters[1]>();
-    expectTypeOf<Date>().toEqualTypeOf<WhereBirthDateParameters[2]>();
+    expectTypeOf(where<Context, "birthDate">)
+      .parameter(0)
+      .toEqualTypeOf<"birthDate">();
+    expectTypeOf(where<Context, "birthDate">)
+      .parameter(1)
+      .toEqualTypeOf<"=">();
+    expectTypeOf(where<Context, "birthDate">)
+      .parameter(2)
+      .toEqualTypeOf<Date>();
 
-    expectTypeOf<Context>().toMatchTypeOf<WhereFirstNameParameters[3]>();
+    expectTypeOf<Context>().toMatchTypeOf<
+      Parameters<typeof where<Context, any>>[3]
+    >();
+
+    expectTypeOf(where<Context, "birthDate">).returns.toMatchTypeOf<
+      Context & {
+        _where: { field: "birthDate"; operator: "="; value: Date };
+      }
+    >();
+
+    expectTypeOf(where<Context, "firstName">).returns.toEqualTypeOf<
+      Context & {
+        _where: { field: "firstName"; operator: "="; value: string };
+      }
+    >();
   });
 });
