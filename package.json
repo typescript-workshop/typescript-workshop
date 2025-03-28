@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "test": "vitest"
+    "test": "vitest --typecheck"
   },
   "devDependencies": {
     "typescript": "~5.7.2",
