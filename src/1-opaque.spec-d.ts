@@ -6,7 +6,8 @@ describe("Opaque", () => {
     type Basic = number;
     type UserId = Opaque<number, "user">;
     type CompanyId = Opaque<number, "company">;
-
+    
+    // Go to ./utils.ts to implement working type
     expectTypeOf<Basic>().not.toEqualTypeOf<UserId>();
     expectTypeOf<UserId>().not.toEqualTypeOf<CompanyId>();
   });
