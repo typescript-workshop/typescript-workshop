@@ -1,4 +1,5 @@
-import { UUID } from "./utils";
+import type { AnyDB } from "./main.ts";
+import { type UUID } from "./utils.ts";
 
 export type UserTable = {
   id: UUID<"user">;
@@ -27,8 +28,8 @@ type DeletableContext<DB> = EmptyContext<DB> & {
   _operation: "delete";
   _table: keyof DB;
 };
-type AnyEmptyContext = EmptyContext<any>;
-type AnySelectableContext = SelectableContext<any>;
+export type AnyEmptyContext = EmptyContext<any>;
+export type AnySelectableContext = SelectableContext<any>;
 type AnyQueryableContext = SelectableContext<any> | DeletableContext<any>;
 
 export const buildContext = <DB>() => {
@@ -37,9 +38,13 @@ export const buildContext = <DB>() => {
   };
 };
 
+export type AnyTable<Ctx extends AnyEmptyContext> = TableOrAlias<
+  keyof Ctx["_db"]
+>;
+type TableOrAlias<TB> = TB | `${TB & string} ${string}`;
 export const selectFrom = <
   Ctx extends AnyEmptyContext,
-  TB extends keyof Ctx["_db"]
+  TB extends AnyTable<Ctx>
 >(
   ctx: Ctx,
   tableName: TB
@@ -49,9 +54,20 @@ export const selectFrom = <
   _table: tableName,
 });
 
+type AliasableField<DB extends AnyDB, TB extends keyof DB> =
+  | keyof DB[TB]
+  | `${keyof DB[TB] & string} as ${string}`;
+export type ExplicitableField<
+  DB extends AnyDB,
+  TB extends keyof DB
+> = TB extends `${infer Table} ${infer Alias}`
+  ? AliasableField<DB, Table> | `${Alias}.${AliasableField<DB, Table> & string}`
+  :
+      | AliasableField<DB, TB>
+      | `${TB & string}.${AliasableField<DB, TB> & string}`;
 export const selectFields = <Ctx extends AnySelectableContext>(
   ctx: Ctx,
-  fieldNames: (keyof Ctx["_db"][Ctx["_table"]])[]
+  fieldNames: ExplicitableField<Ctx["_db"], Ctx["_table"]>[]
 ) => ({
   ...ctx,
   _fields: fieldNames,

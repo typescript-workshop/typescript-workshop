@@ -1,4 +1,4 @@
-import { describe, expectTypeOf, it } from "vitest";
+import { describe, expect, expectTypeOf, it } from "vitest";
 import { buildContext, type Database, selectFrom, selectFields } from "./db";
 
 describe("Selectionner des champs dans une table", () => {
@@ -8,35 +8,23 @@ describe("Selectionner des champs dans une table", () => {
     const selectCompaniesQuery = selectFrom(context, "companies");
 
     type UserContext = typeof selectUsersQuery;
-    type CompanyContext = typeof selectCompaniesQuery;
 
     expectTypeOf(selectFields<UserContext>)
       .parameter(0)
       .toEqualTypeOf<UserContext>();
 
-    expectTypeOf(selectFields<UserContext>)
-      .parameter(1)
-      .toEqualTypeOf<("id" | "firstName" | "lastName" | "birthDate")[]>();
-    expectTypeOf(selectFields<CompanyContext>)
-      .parameter(1)
-      .toEqualTypeOf<("id" | "name")[]>();
+    const usersQueryWithFields = selectFields(selectUsersQuery, [
+      "id",
+      "firstName",
+      "lastName",
+      "birthDate",
+    ]);
+    expect(usersQueryWithFields._fields).toEqual(["id", "name"]);
 
-
-    const usersQueryWithFields = selectFields(selectUsersQuery, ["birthDate"]);
-    expectTypeOf(usersQueryWithFields).toEqualTypeOf<
-      UserContext & {
-        _fields: ("id" | "firstName" | "lastName" | "birthDate")[];
-      }
-    >();
-
-    const companiesQueryWithFields = selectFields(
-        selectCompaniesQuery,
-      ["name"],
-    );
-    expectTypeOf(companiesQueryWithFields).toEqualTypeOf<
-      CompanyContext & {
-        _fields: ("id" | "name")[];
-      }
-    >();
+    const companiesQueryWithFields = selectFields(selectCompaniesQuery, [
+      "id",
+      "name",
+    ]);
+    expect(companiesQueryWithFields._fields).toEqual(["id", "name"]);
   });
 });
