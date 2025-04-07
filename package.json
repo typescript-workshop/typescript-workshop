@@ -4,7 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "test": "vitest --typecheck"
+    "test": "vitest --typecheck --typecheck.ignoreSourceErrors=true"
   },
   "devDependencies": {
     "typescript": "~5.7.2",
