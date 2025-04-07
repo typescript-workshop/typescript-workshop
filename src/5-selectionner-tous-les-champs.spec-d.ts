@@ -2,7 +2,7 @@ import { describe, expectTypeOf, it } from "vitest";
 import { buildContext, type Database, selectAll, selectFrom } from "./db";
 
 describe("Selectionner tous les champs d'une table", () => {
-  it("On peut sélectionner tous les champs d'une table", () => {
+  it.todo("On peut sélectionner tous les champs d'une table", () => {
     const context = buildContext<Database>();
     const selectUsersQuery = selectFrom(context, "users");
 

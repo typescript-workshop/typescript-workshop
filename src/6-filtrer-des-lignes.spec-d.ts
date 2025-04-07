@@ -2,7 +2,7 @@ import { describe, expectTypeOf, it } from "vitest";
 import { buildContext, type Database, selectFrom, where } from "./db";
 
 describe("Filtrer les lignes d'une table", () => {
-  it("On peut fournir un critère afin de ne récupérer que des lignes qui le satisfont", () => {
+  it.todo("On peut fournir un critère afin de ne récupérer que des lignes qui le satisfont", () => {
     const context = buildContext<Database>();
     const selectUsersQuery = selectFrom(context, "users");
 

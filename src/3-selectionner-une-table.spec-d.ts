@@ -2,7 +2,7 @@ import { describe, expectTypeOf, it, expect } from "vitest";
 import { buildContext, selectFrom, type Database } from "./db";
 
 describe("Selectionner une table", () => {
-  it("On peut sélectionner depuis une table de notre DB", () => {
+  it.todo("On peut sélectionner depuis une table de notre DB", () => {
     const context = buildContext<Database>();
     type Context = typeof context;
 

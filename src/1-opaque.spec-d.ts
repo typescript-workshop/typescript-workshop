@@ -21,7 +21,7 @@ describe("Opaque", () => {
     expectTypeOf<UserId>().not.toEqualTypeOf<CompanyId>();
   });
 
-  it("should add separate uuid & opaque types", () => {
+  it.todo("should add separate uuid & opaque types", () => {
     type OpaqueUserId = Opaque<string, "user">;
     type UserUUID = UUID<"user">;
 

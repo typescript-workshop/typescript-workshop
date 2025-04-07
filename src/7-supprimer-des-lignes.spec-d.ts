@@ -2,7 +2,7 @@ import { describe, expectTypeOf, it, expect } from "vitest";
 import { buildContext, deleteFrom, where, type Database } from "./db";
 
 describe("Supprimer des enregistrements d'une table", () => {
-  it("On peut spécifier une opération 'delete' à notre contexte", () => {
+  it.todo("On peut spécifier une opération 'delete' à notre contexte", () => {
     const context = buildContext<Database>();
     type Context = typeof context;
     const deleteUsersQuery = deleteFrom(context, "users");

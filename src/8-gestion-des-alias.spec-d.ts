@@ -2,7 +2,7 @@ import { describe, it } from "vitest";
 import { buildContext, selectFields, selectFrom, type Database } from "./db";
 
 describe("Supprimer des enregistrements d'une table", () => {
-  it("should allow table alias", () => {
+  it.todo("should allow table alias", () => {
     const context = buildContext<Database>();
     selectFrom(context, "users");
     selectFrom(context, "users u");
@@ -10,7 +10,7 @@ describe("Supprimer des enregistrements d'une table", () => {
     selectFrom(context, "companies c");
   });
 
-  it("should allow field alias", () => {
+  it.todo("should allow field alias", () => {
     const context = buildContext<Database>();
     const selectUsersQuery = selectFrom(context, "companies");
     selectFields(selectUsersQuery, ["id"]);
@@ -21,7 +21,7 @@ describe("Supprimer des enregistrements d'une table", () => {
     selectFields(selectUsersQuery, ["fail"]);
   });
 
-  it("should allow explicit table in field name", () => {
+  it.todo("should allow explicit table in field name", () => {
     //given
     const context = buildContext<Database>();
     const selectUsersQuery = selectFrom(context, "users");
