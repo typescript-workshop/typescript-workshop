@@ -1,5 +1,11 @@
 import { describe, it } from "vitest";
-import { buildContext, type CustomerDatabase, selectFields, selectFrom, ShoppingDatabase } from "./db";
+import {
+  buildContext,
+  selectFields,
+  selectFrom,
+  type CustomerDatabase,
+  type ShoppingDatabase,
+} from "./db";
 
 describe("Selectionner des champs dans une table", () => {
   it.todo("On peut sélectionner parmi tous les champs d'une table", () => {
@@ -9,26 +15,19 @@ describe("Selectionner des champs dans une table", () => {
       "id",
       "firstName",
       "lastName",
-      "birthDate"
+      "birthDate",
     ]);
     // @ts-expect-error
     selectFields(selectUsersQuery, ["idi"]);
 
     const selectCompaniesQuery = selectFrom(customerContext, "companies");
-    selectFields(selectCompaniesQuery, [
-      "id",
-      "name",
-    ]);
+    selectFields(selectCompaniesQuery, ["id", "name"]);
     // @ts-expect-error
     selectFields(selectCompaniesQuery, ["id", "firstName"]);
 
     const shoppingContext = buildContext<ShoppingDatabase>();
     const selectProductsQuery = selectFrom(shoppingContext, "products");
-    selectFields(selectProductsQuery, [
-      "id",
-      "name",
-      "description",
-    ]);
+    selectFields(selectProductsQuery, ["id", "name", "description"]);
     // @ts-expect-error
     selectFields(selectProductsQuery, ["id", "firstName"]);
   });

@@ -7,7 +7,7 @@ describe("Construire le contexte", () => {
 
     // Go to ./db.ts to implement working type
     expectTypeOf(customerContext).toEqualTypeOf<{
-      $db: CustomerDatabase;
+      _db: CustomerDatabase;
     }>();
   });
 });

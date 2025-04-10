@@ -10,9 +10,30 @@ export type CompanyTable = {
   id: UUID<"company">;
   name: string;
 };
-export type Database = {
+
+export type CustomerDatabase = {
   users: UserTable;
   companies: CompanyTable;
+};
+
+type Quantity = number; // could be opaque ^^
+type Price = number; // could be opaque ^^
+
+export type ProductTable = {
+  id: string;
+  name: string;
+  description: string;
+  unitPrice: Price;
+};
+
+export type CartTable = {
+  id: string;
+  items: [Quantity, [ProductTable["id"]]][];
+};
+
+export type ShoppingDatabase = {
+  carts: CartTable;
+  products: ProductTable;
 };
 
 export const buildContext = () => {
@@ -21,19 +42,13 @@ export const buildContext = () => {
   };
 };
 
-export const selectFrom = (
-  ctx: any,
-  tableName: any
-) => ({
+export const selectFrom = (ctx: any, tableName: any) => ({
   ...ctx,
   _operation: "select",
   _table: tableName,
 });
 
-export const selectFields = (
-  ctx: any,
-  fieldNames: any[]
-) => ({
+export const selectFields = (ctx: any, fieldNames: any[]) => ({
   ...ctx,
   _fields: fieldNames,
 });
@@ -43,12 +58,7 @@ export const selectAll = (ctx: any) => ({
   _fields: "ALL",
 });
 
-export const where = (
-  ctx: any,
-  field: any,
-  operator: "=",
-  value: any
-) => ({
+export const where = (ctx: any, field: any, operator: "=", value: any) => ({
   ...ctx,
   _where: {
     field,
@@ -57,10 +67,7 @@ export const where = (
   },
 });
 
-export const deleteFrom = (
-  ctx: any,
-  tableName: any
-) => ({
+export const deleteFrom = (ctx: any, tableName: any) => ({
   ...ctx,
   _operation: "delete",
   _table: tableName,
