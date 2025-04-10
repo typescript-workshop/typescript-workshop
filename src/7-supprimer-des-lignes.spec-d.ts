@@ -1,26 +1,22 @@
-import { describe, expectTypeOf, it, expect } from "vitest";
-import { buildContext, deleteFrom, where, type Database } from "./db";
+import { describe, it } from "vitest";
+import { buildContext, deleteFrom, ShoppingDatabase, where, type CustomerDatabase } from "./db";
 
 describe("Supprimer des enregistrements d'une table", () => {
   it.todo("On peut spécifier une opération 'delete' à notre contexte", () => {
-    const context = buildContext<Database>();
-    type Context = typeof context;
-    const deleteUsersQuery = deleteFrom(context, "users");
+    const customerContext = buildContext<CustomerDatabase>();
+    deleteFrom(customerContext, "users");
+    // @ts-expect-error
+    deleteFrom(customerContext, "products");
+    
+    const shoppingContext = buildContext<ShoppingDatabase>();
+    deleteFrom(shoppingContext, "products");
+    // @ts-expect-error
+    deleteFrom(shoppingContext, "productzz");
+  });
+  
+  it.todo("On peut appliquer un filtre sur une opération 'delete'", () => {
+    const customerContext = buildContext<CustomerDatabase>();
+    const deleteUsersQuery = deleteFrom(customerContext, "users");
     where(deleteUsersQuery, "firstName", "=", "Marjo");
-
-    expectTypeOf(deleteFrom<Context, "users" | "companies">)
-      .parameter(1)
-      .toEqualTypeOf<"users" | "companies">();
-
-    const deleteQuery = deleteFrom(context, "users");
-    type ExpectedContext = Context & {
-      _operation: "delete";
-      _table: "users";
-    };
-    expectTypeOf(deleteQuery).toMatchTypeOf<ExpectedContext>();
-    expect(deleteQuery).toEqual({
-      _operation: "delete",
-      _table: "users",
-    });
   });
 });

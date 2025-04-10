@@ -1,25 +1,24 @@
-import { describe, expectTypeOf, it, expect } from "vitest";
-import { buildContext, selectFrom, type Database } from "./db";
+import { describe, it } from "vitest";
+import { buildContext, CustomerDatabase, selectFrom, type ShoppingDatabase } from "./db";
 
 describe("Selectionner une table", () => {
-  it.todo("On peut sélectionner depuis une table de notre DB", () => {
-    const context = buildContext<Database>();
-    type Context = typeof context;
-
+  it("On peut sélectionner depuis une table de notre DB", () => {
     // Go to ./db.ts to implement working type
-    expectTypeOf(selectFrom<Context, "users" | "companies">)
-      .parameter(1)
-      .toEqualTypeOf<"users" | "companies">();
-
-    const selectQuery = selectFrom(context, "users");
-    type ExpectedContext = Context & {
-      _operation: "select";
-      _table: "users";
-    };
-    expectTypeOf(selectQuery).toMatchTypeOf<ExpectedContext>();
-    expect(selectQuery).toEqual({
-      _operation: "select",
-      _table: "users",
-    });
+    
+    const customerContext = buildContext<CustomerDatabase>();
+    selectFrom(customerContext, "users")
+    selectFrom(customerContext, "companies")
+    // @ts-expect-error
+    selectFrom(customerContext, "products")
+    // @ts-expect-error
+    selectFrom(customerContext, "companiz")
+    
+    const shoppingContext = buildContext<ShoppingDatabase>();
+    selectFrom(shoppingContext, "products")
+    selectFrom(shoppingContext, "carts")
+    // @ts-expect-error
+    selectFrom(shoppingContext, "users")
+    // @ts-expect-error
+    selectFrom(shoppingContext, "cartz")
   });
 });

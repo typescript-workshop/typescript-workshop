@@ -1,18 +1,18 @@
 import { describe, it } from "vitest";
-import { buildContext, selectFields, selectFrom, type Database } from "./db";
+import { buildContext, selectFields, selectFrom, type CustomerDatabase } from "./db";
 
 describe("Supprimer des enregistrements d'une table", () => {
-  it.todo("should allow table alias", () => {
-    const context = buildContext<Database>();
-    selectFrom(context, "users");
-    selectFrom(context, "users u");
-    selectFrom(context, "companies");
-    selectFrom(context, "companies c");
+  it.todo("On peut aliaser à une table", () => {
+    const customerContext = buildContext<CustomerDatabase>();
+    selectFrom(customerContext, "users");
+    selectFrom(customerContext, "users u");
+    selectFrom(customerContext, "companies");
+    selectFrom(customerContext, "companies c");
   });
 
-  it.todo("should allow field alias", () => {
-    const context = buildContext<Database>();
-    const selectUsersQuery = selectFrom(context, "companies");
+  it.todo("On peut aliaser un champ", () => {
+    const customerContext = buildContext<CustomerDatabase>();
+    const selectUsersQuery = selectFrom(customerContext, "companies");
     selectFields(selectUsersQuery, ["id"]);
     selectFields(selectUsersQuery, ["id as userId"]);
     selectFields(selectUsersQuery, ["name"]);
@@ -21,16 +21,16 @@ describe("Supprimer des enregistrements d'une table", () => {
     selectFields(selectUsersQuery, ["fail"]);
   });
 
-  it.todo("should allow explicit table in field name", () => {
+  it.todo("On peut expliciter un champ avec le nom de la table", () => {
     //given
-    const context = buildContext<Database>();
-    const selectUsersQuery = selectFrom(context, "users");
+    const customerContext = buildContext<CustomerDatabase>();
+    const selectUsersQuery = selectFrom(customerContext, "users");
     selectFields(selectUsersQuery, ["users.firstName"]);
     selectFields(selectUsersQuery, ["firstName"]);
     // @ts-expect-error
     selectFields(selectUsersQuery, ["s.firstName"]);
 
-    const selectUsersAliasedQuery = selectFrom(context, "users u");
+    const selectUsersAliasedQuery = selectFrom(customerContext, "users u");
     selectFields(selectUsersAliasedQuery, ["u.firstName"]);
     selectFields(selectUsersAliasedQuery, ["firstName"]);
     // @ts-expect-error

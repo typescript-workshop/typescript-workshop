@@ -1,30 +1,35 @@
-import { describe, expect, expectTypeOf, it } from "vitest";
-import { buildContext, type Database, selectFrom, selectFields } from "./db";
+import { describe, it } from "vitest";
+import { buildContext, type CustomerDatabase, selectFields, selectFrom, ShoppingDatabase } from "./db";
 
 describe("Selectionner des champs dans une table", () => {
   it.todo("On peut sélectionner parmi tous les champs d'une table", () => {
-    const context = buildContext<Database>();
-    const selectUsersQuery = selectFrom(context, "users");
-    const selectCompaniesQuery = selectFrom(context, "companies");
-
-    type UserContext = typeof selectUsersQuery;
-
-    expectTypeOf(selectFields<UserContext>)
-      .parameter(0)
-      .toEqualTypeOf<UserContext>();
-
-    const usersQueryWithFields = selectFields(selectUsersQuery, [
+    const customerContext = buildContext<CustomerDatabase>();
+    const selectUsersQuery = selectFrom(customerContext, "users");
+    selectFields(selectUsersQuery, [
       "id",
       "firstName",
       "lastName",
-      "birthDate",
+      "birthDate"
     ]);
-    expect(usersQueryWithFields._fields).toEqual(["id", "name"]);
+    // @ts-expect-error
+    selectFields(selectUsersQuery, ["idi"]);
 
-    const companiesQueryWithFields = selectFields(selectCompaniesQuery, [
+    const selectCompaniesQuery = selectFrom(customerContext, "companies");
+    selectFields(selectCompaniesQuery, [
       "id",
       "name",
     ]);
-    expect(companiesQueryWithFields._fields).toEqual(["id", "name"]);
+    // @ts-expect-error
+    selectFields(selectCompaniesQuery, ["id", "firstName"]);
+
+    const shoppingContext = buildContext<ShoppingDatabase>();
+    const selectProductsQuery = selectFrom(shoppingContext, "products");
+    selectFields(selectProductsQuery, [
+      "id",
+      "name",
+      "description",
+    ]);
+    // @ts-expect-error
+    selectFields(selectProductsQuery, ["id", "firstName"]);
   });
 });
