@@ -1,13 +1,11 @@
-import { type UUID } from "./utils.ts";
-
 export type UserTable = {
-  id: UUID<"user">;
+  id: string;
   firstName: string;
   lastName: string;
   birthDate: Date;
 };
 export type CompanyTable = {
-  id: UUID<"company">;
+  id: string;
   name: string;
 };
 
@@ -16,8 +14,8 @@ export type CustomerDatabase = {
   companies: CompanyTable;
 };
 
-type Quantity = number; // could be opaque ^^
-type Price = number; // could be opaque ^^
+type Quantity = number;
+type Price = number;
 
 export type ProductTable = {
   id: string;
