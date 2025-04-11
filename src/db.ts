@@ -14,7 +14,6 @@ export type CustomerDatabase = {
   companies: CompanyTable;
 };
 
-type Quantity = number;
 type Price = number;
 
 export type ProductTable = {
@@ -26,7 +25,7 @@ export type ProductTable = {
 
 export type CartTable = {
   id: string;
-  items: [Quantity, [ProductTable["id"]]][];
+  items: ProductTable["id"][];
 };
 
 export type ShoppingDatabase = {
