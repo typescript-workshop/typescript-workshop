@@ -4,23 +4,23 @@ describe("Basiques", () => {
   // Dans ce premier exercice, remplacer ______ par le type souhaité
 
   it("Les types primitifs", () => {
-    // const firstName: ______ = "Charlotte"; // "Charlotte" is a text value
-    // expectTypeOf(firstName).toEqualTypeOf("Charlotte");
-    // const age: _____ = 30; // Age is a number
-    // expectTypeOf(age).toEqualTypeOf(30);
-    // const isLoggedIn: _____ = true; // True/false value
-    // expectTypeOf(isLoggedIn).toEqualTypeOf(true);
-    // const emptyValue: _____ = null; // Represents intentional absence
-    // expectTypeOf(emptyValue).toEqualTypeOf(null);
-    // const notAssignedYet: _____ = undefined; // Declared but not yet given a value
-    // expectTypeOf(notAssignedYet).toEqualTypeOf(undefined);
-    // const uniqueId: _____ = Symbol("id"); // Unique and immutable identifier
-    // expectTypeOf(uniqueId).toEqualTypeOf(Symbol("id"));
-    // //(note: needs ES2020 or later)
-    // let reallyBigNumber: _____ = 1234567890123456789012345678901234567890n;
-    // expectTypeOf(reallyBigNumber).toEqualTypeOf(
-    //   1234567890123456789012345678901234567890n
-    // );
+    const firstName: ______ = "Charlotte"; // "Charlotte" is a text value
+    expectTypeOf(firstName).toEqualTypeOf("Charlotte");
+    const age: _____ = 30; // Age is a number
+    expectTypeOf(age).toEqualTypeOf(30);
+    const isLoggedIn: _____ = true; // True/false value
+    expectTypeOf(isLoggedIn).toEqualTypeOf(true);
+    const emptyValue: _____ = null; // Represents intentional absence
+    expectTypeOf(emptyValue).toEqualTypeOf(null);
+    const notAssignedYet: _____ = undefined; // Declared but not yet given a value
+    expectTypeOf(notAssignedYet).toEqualTypeOf(undefined);
+    const uniqueId: _____ = Symbol("id"); // Unique and immutable identifier
+    expectTypeOf(uniqueId).toEqualTypeOf(Symbol("id"));
+    //(note: needs ES2020 or later)
+    let reallyBigNumber: _____ = 1234567890123456789012345678901234567890n;
+    expectTypeOf(reallyBigNumber).toEqualTypeOf(
+      1234567890123456789012345678901234567890n
+    );
   });
 
   describe("Les types par références", () => {
