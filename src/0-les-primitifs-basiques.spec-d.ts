@@ -1,8 +1,9 @@
 import { describe, expectTypeOf, it } from "vitest";
 
 describe("Basiques", () => {
+  // Dans ce premier exercice, remplacer ______ par le type souhaité
+
   it("Les types primitifs", () => {
-    // Dans ce premier exercice remplacé ______ par le type souhaité
     // const firstName: ______ = "Charlotte"; // "Charlotte" is a text value
     // expectTypeOf(firstName).toEqualTypeOf("Charlotte");
     // const age: _____ = 30; // Age is a number
@@ -14,7 +15,7 @@ describe("Basiques", () => {
     // const notAssignedYet: _____ = undefined; // Declared but not yet given a value
     // expectTypeOf(notAssignedYet).toEqualTypeOf(undefined);
     // const uniqueId: _____ = Symbol("id"); // Unique and immutable identifier
-    // expectTypeOf(uniqueId).toEqualTypeOf("id");
+    // expectTypeOf(uniqueId).toEqualTypeOf(Symbol("id"));
     // //(note: needs ES2020 or later)
     // let reallyBigNumber: _____ = 1234567890123456789012345678901234567890n;
     // expectTypeOf(reallyBigNumber).toEqualTypeOf(
@@ -35,7 +36,7 @@ describe("Basiques", () => {
 
     it("Tuples", () => {
       // const user: _____ = ["Alice", 25];
-      // expectTypeOf(user).toEqualTypeOf([true, false, true]);
+      // expectTypeOf(user).toMatchTypeOf(["Alice", 25]);
     });
 
     it("Les objets", () => {
@@ -45,9 +46,9 @@ describe("Basiques", () => {
       //   isEmployed: true,
       // };
       // expectTypeOf(user).toEqualTypeOf({
-      //   name: "Eléanore",
-      //   age: 30,
-      //   isEmployed: true,
+      //   name: "Max",
+      //   age: 42,
+      //   isEmployed: false,
       // });
       // const company: _____ = {
       //   name: "Devoxx",
@@ -56,34 +57,37 @@ describe("Basiques", () => {
       //     zip: 75000,
       //   },
       // };
-      // expectTypeOf(company).toEqualTypeOf();
+      // expectTypeOf(company).toEqualTypeOf({
+      //   name: "Comet",
+      //   address: {
+      //     city: "Paris",
+      //     zip: 75002,
+      //   },
+      // });
     });
   });
 });
 
 describe("Type of, keyof, lookup type", () => {
   it("typeof", () => {
-    // const username = "Alice";
+    // const username = _____;
     // type UsernameType = typeof username;
-    // expectTypeOf<UsernameType>().toEqualTypeOf<string>();
-    // const config = {
-    //   darkMode: true,
-    //   version: 2.1,
-    // };
+    // expectTypeOf<UsernameType>().toMatchTypeOf<string>();
+    // const config = _____;
     // type ConfigType = typeof config;
-    // expectTypeOf<ConfigType>().toMatchTypeOf<{
+    // expectTypeOf<ConfigType>().toEqualTypeOf<{
     //   darkMode: boolean;
     //   version: number;
     // }>();
   });
   it("keyof", () => {
-    // Write type User
+    // type User = _____
     // type UserKeys = keyof User;
     // expectTypeOf<UserKeys>().toEqualTypeOf<"id" | "name" | "email">();
   });
-
+  
   it("lookup type", () => {
-    //Write type User
+    // type User = _____
     // type UserEmailType = User["email"];
     // expectTypeOf<UserEmailType>().toEqualTypeOf<string>();
   });
