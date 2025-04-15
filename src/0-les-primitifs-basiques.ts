@@ -14,14 +14,9 @@ export function testBasics() {
   expectTypeOf(firstName).toEqualTypeOf("Charlotte");
   const age: _____ = 30; // Age is a number
   expectTypeOf(age).toEqualTypeOf(30);
-<<<<<<< HEAD
   const isEven = (num: number) => num % 2 === 0;
   const isLoggedIn: _____ = true; // True/false value
   expectTypeOf(isLoggedIn).toEqualTypeOf(isEven(2));
-=======
-  const isLoggedIn: _____ = true; // True/false value
-  expectTypeOf(isLoggedIn).toEqualTypeOf(true);
->>>>>>> c679715 (template literals tests for exercise n°0)
   const emptyValue: _____ = null; // Represents intentional absence
   expectTypeOf(emptyValue).toEqualTypeOf(null);
   const notAssignedYet: _____ = undefined; // Declared but not yet given a value
