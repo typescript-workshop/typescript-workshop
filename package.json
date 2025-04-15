@@ -3,14 +3,10 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
-  "scripts": {
-    "test": "vitest --typecheck --typecheck.ignoreSourceErrors=true"
-  },
+  "scripts": {},
   "devDependencies": {
     "typescript": "~5.7.2",
     "vitest": "^3.0.6"
   },
-  "dependencies": {
-    "ts-pattern": "^5.6.2"
-  }
+  "dependencies": {}
 }
