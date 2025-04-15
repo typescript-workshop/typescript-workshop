@@ -110,3 +110,63 @@ export function testOperators() {
   // type CompanyNameType = Company["name"];
   // expectTypeOf<CompanyNameType>().toEqualTypeOf<string>();
 }
+
+/**
+ * Les types génériques
+ */
+export function testGenericsTypes() {
+    /**
+     * Utiliser un type générique pour typer la sortie
+     */
+    // function parseJSON<______>(input: string): ______ {
+    //     return JSON.parse(input)
+    // }
+    // const inferredFromOutput: {otherProp: string} = parseJSON('{otherProp:"tata"}');
+    // expectTypeOf(inferredFromOutput).toEqualTypeOf<{otherProp: string}>();
+    //
+    // const explicitGenericOutput = parseJSON<{ prop: string }>('{prop:"toto"}');
+    // expectTypeOf(explicitGenericOutput).toEqualTypeOf<{ prop: string }>();
+
+    /**
+     * Utiliser un type générique pour typer un paramètre
+     */
+    // function addProp<______>(input: ______) {
+    //     return {...input, newProp: 'yeahh'}
+    // }
+    //
+    // const inferredFromInput = addProp({toto: "tata" as const});
+    // expectTypeOf(inferredFromInput).toMatchTypeOf<{toto: "tata"; newProp: string}>();
+    //
+    // const explicitGenericInput = addProp<{prop1: string}>({prop1: "toto" });
+    // expectTypeOf(explicitGenericInput).toMatchTypeOf<{prop1: string; newProp: string}>();
+
+    /**
+     * Utiliser plusieurs types génériques
+     */
+    // function transform<______, ______>(input: ______, fn: (input: ______) => ______): ______ {
+    //     return fn(input)
+    // }
+    // function stringify(data: any) {
+    //     return String(data)
+    // }
+    // function length(data: string) {
+    //     return data.length
+    // }
+    // const transformStringifyOutput = transform(42, stringify)
+    // expectTypeOf(transformStringifyOutput).toEqualTypeOf<string>();
+    //
+    // const transformLengthOutput = transform("four", length)
+    // expectTypeOf(transformLengthOutput).toEqualTypeOf<number>();
+
+    /**
+     * Ajouter des contraintes
+     */
+    // function lookup<______, ______ extends ______>(data: ______, prop: ______) {
+    //     return data[prop]
+    // }
+    // const userName = lookup({ name: "Max", age: 42}, 'name')
+    // expectTypeOf(userName).toEqualTypeOf<string>();
+    //
+    // const stringLength = lookup("four", "length")
+    // expectTypeOf(stringLength).toEqualTypeOf<number>();
+}
