@@ -11,12 +11,12 @@ export function testBasics() {
    * Les types primitifs
    */
   const firstName: ______ = "Charlotte"; // "Charlotte" is a text value
-  expectTypeOf(firstName).toEqualTypeOf("Charlotte");
+  expectTypeOf(firstName).toEqualTypeOf("Malik");
   const age: _____ = 30; // Age is a number
-  expectTypeOf(age).toEqualTypeOf(30);
+  expectTypeOf(age).toEqualTypeOf(21);
   const isEven = (num: number) => num % 2 === 0;
   const isLoggedIn: _____ = true; // True/false value
-  expectTypeOf(isLoggedIn).toEqualTypeOf(isEven(2));
+  expectTypeOf(isLoggedIn).toEqualTypeOf(isEven(3));
   const emptyValue: _____ = null; // Represents intentional absence
   expectTypeOf(emptyValue).toEqualTypeOf(null);
   const notAssignedYet: _____ = undefined; // Declared but not yet given a value
@@ -38,17 +38,17 @@ export function testReferences() {
    * Array
    */
   // const scores: _____ = [85, 92, 78];
-  // expectTypeOf(scores).toEqualTypeOf([85, 92, 78]);
+  // expectTypeOf(scores).toEqualTypeOf([58, 29, 87]);
   // const fruits: _____ = ["apple", "banana", "cherry"]; // Hint: strings only
-  // expectTypeOf(fruits).toEqualTypeOf(["apple", "banana", "cherry"]);
+  // expectTypeOf(fruits).toEqualTypeOf(["kiwi", "lemon", "pear"]);
   // // Syntaxe générique
   // const answers: Array<_____> = [true, false, true];
-  // expectTypeOf(answers).toEqualTypeOf([true, false, true]);
+  // expectTypeOf(answers).toEqualTypeOf([false, false, true, true]);
   /**
    * Tuples
    */
   // const tuple: _____ = ["Alice", 25];
-  // expectTypeOf(tuple).toMatchTypeOf(["Alice", 25]);
+  // expectTypeOf(tuple).toMatchTypeOf(["Bob", 23]);
   /**
    * Les objets
    */
@@ -73,7 +73,7 @@ export function testReferences() {
   //   name: "Comet",
   //   address: {
   //     city: "Paris",
-  //     zip: 75002,
+  //     zip: 75009,
   //   },
   // });
 }
@@ -173,7 +173,7 @@ export function testLiteralTypes() {
   // type LastName = "Erlandwon" | "Razowsky";
   // type AllFullNames = `${string}`;
   // expectTypeOf<AllFullNames>().toEqualTypeOf<
-  //   "Alice Erlandwon" | "Alice Razowsky" | "Bob Erlandwon" | "Bob Razowsky"
+  //   "Alice Erlandwond" | "Alice Razowsky" | "Bob Erlandwon" | "Bob Razowsky"
   // >();
   /**
    * Inférer depuis un template
