@@ -6,7 +6,7 @@ import { expectTypeOf } from "vitest";
  * Dans ce premier exercice, remplacer ______ par le type souhaité
  */
 
-export function basics() {
+export function testBasics() {
     /**
      * Les types primitifs
      */
@@ -32,7 +32,7 @@ export function basics() {
 /**
  * Les types par références
  */
-export function references() {
+export function testReferences() {
     /**
      * Array
      */
@@ -47,8 +47,8 @@ export function references() {
     /**
      * Tuples
      */
-    // const user: _____ = ["Alice", 25];
-    // expectTypeOf(user).toMatchTypeOf(["Alice", 25]);
+    // const tuple: _____ = ["Alice", 25];
+    // expectTypeOf(tuple).toMatchTypeOf(["Alice", 25]);
 
     /**
      * Les objets
@@ -82,7 +82,7 @@ export function references() {
 /**
  * Type of, keyof, lookup type
  */
-export function operators() {
+export function testOperators() {
   /**
    * typeof
    */
@@ -106,7 +106,7 @@ export function operators() {
   /**
    * lookup type
    */
-  // type User = _____
-  // type UserEmailType = User["email"];
-  // expectTypeOf<UserEmailType>().toEqualTypeOf<string>();
+  // type Company = _____
+  // type CompanyNameType = Company["name"];
+  // expectTypeOf<CompanyNameType>().toEqualTypeOf<string>();
 }
