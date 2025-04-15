@@ -1,4 +1,5 @@
 import {buildContext, type CustomerDatabase, selectFields, selectFrom,} from "./db";
+import {expectTypeOf} from "vitest";
 
 /**
  * Supprimer des enregistrements d'une table
@@ -12,6 +13,7 @@ export function testAliases() {
     // selectFrom(customerContext, "users u");
     // selectFrom(customerContext, "companies");
     // selectFrom(customerContext, "companies c");
+    // expectTypeOf(selectFrom(customerContext, "companies c")._table).toEqualTypeOf<'companies c'>()
 
     /**
      * On peut aliaser un champ
