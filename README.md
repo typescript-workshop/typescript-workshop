@@ -15,6 +15,10 @@ Prérequis :
 Connaissances de base TypeScript
 Votre ordinateur 💻
 
+## Companion
+
+Lien vers le companion où vous retrouverez de la documentation, les exercices avec les indices ainsi que les solutions associées. https://typescript-workshop.github.io/typescript-workshop-companion/
+
 ## Ressources
 
 TypeScript doc : https://www.typescriptlang.org/docs/
