@@ -2,7 +2,7 @@ import {buildContext, type CustomerDatabase, selectFields, selectFrom,} from "./
 import {expectTypeOf} from "vitest";
 
 /**
- * Supprimer des enregistrements d'une table
+ * Aliaser les tables et leurs champs
  */
 export function testAliases() {
     /**
